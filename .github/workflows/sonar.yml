@@ -19,4 +19,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Run SonarQube scan
-        run: mvn clean verify sonar:sonar -Dsonar.projectKey=sonarqube-github-demo -Dsonar.host.url=https://3653-124-160-63-226.ngrok-free.app -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        run: mvn clean verify sonar:sonar "-Dsonar.projectKey=sonarqube-github-demo" "-Dsonar.host.url=https://3653-124-160-63-226.ngrok-free.app" "-Dsonar.token=${{ secrets.SONAR_TOKEN }}"
