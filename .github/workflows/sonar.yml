@@ -10,14 +10,15 @@ jobs:
 
     services:
       sonarqube:
-        image: sonarqube:latest
+        image: sonarqube:community
         ports:
           - 9000:9000
         options: >-
-          --health-cmd "curl -f http://localhost:9000/api/system/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --user=1001
+          --health-cmd="curl -f http://localhost:9000/api/system/health || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=20
 
     steps:
       - name: Checkout source
@@ -29,15 +30,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Wait for SonarQube to be up
+      - name: Wait for SonarQube to be UP
         run: |
-          echo "Waiting for SonarQube to be up..."
+          echo "Waiting for SonarQube..."
           until curl -s http://localhost:9000/api/system/health | grep -q '"status":"UP"'; do
             sleep 5
           done
 
-      - name: Generate SonarQube token
+      - name: Mask token
         run: echo "::add-mask::${{ secrets.SONAR_TOKEN }}"
 
-      - name: Run SonarQube scan
+      - name: Run Sonar Scanner
         run: mvn clean verify sonar:sonar -Dsonar.projectKey=user-api-demo -Dsonar.host.url=http://localhost:9000 -Dsonar.token=${{ secrets.SONAR_TOKEN }}
